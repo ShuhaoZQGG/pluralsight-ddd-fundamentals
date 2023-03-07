@@ -92,7 +92,6 @@ namespace FrontDesk.Core.ScheduleAggregate
     /// </summary>
     public void AppointmentUpdatedHandler()
     {
-      // TODO: Add ScheduleHandler calls to UpdateDoctor, UpdateRoom to complete additional rules described in MarkConflictingAppointments
       MarkConflictingAppointments();
     }
   }
