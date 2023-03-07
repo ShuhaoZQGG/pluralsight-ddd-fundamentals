@@ -72,13 +72,14 @@ namespace FrontDesk.Core.ScheduleAggregate
       {
         // same patient cannot have two appointments at same time
         var potentiallyConflictingAppointments = _appointments
-            .Where(a => a.PatientId == appointment.PatientId &&
+            .Where(a => 
+            (a.PatientId == appointment.PatientId ||
+             a.RoomId == appointment.RoomId ||
+             a.DoctorId == appointment.DoctorId
+             ) &&
             a.TimeRange.Overlaps(appointment.TimeRange) &&
             a != appointment)
             .ToList();
-
-        // TODO: Add a rule to mark overlapping appointments in same room as conflicting
-        // TODO: Add a rule to mark same doctor with overlapping appointments as conflicting
 
         potentiallyConflictingAppointments.ForEach(a => a.IsPotentiallyConflicting = true);
 

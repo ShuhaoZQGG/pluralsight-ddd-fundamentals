@@ -51,7 +51,7 @@ namespace UnitTests.Core.AggregatesEntities.ScheduleTests
     }
 
     [Fact]
-    public void MarksConflictingAppointmentsForSameAnimalInTwoRoomsAtSameTime()
+    public void MarksConflictingAppointmentsForSamePatientInTwoRoomsAtSameTime()
     {
       var schedule = new Schedule(_scheduleId, _dateRange, _clinicId);
       var appointmentType = 1;
@@ -64,7 +64,49 @@ namespace UnitTests.Core.AggregatesEntities.ScheduleTests
       schedule.AddNewAppointment(lisaAppointment);
 
       var lisaTitle2 = "Lisa Appointment 2";
-      var lisaAppointment2 = new Appointment(Guid.NewGuid(), appointmentType, _scheduleId, _clinicId, doctorId, patientId, roomId+1, _dateRange, lisaTitle2);
+      var lisaAppointment2 = new Appointment(Guid.NewGuid(), appointmentType, _scheduleId, _clinicId, doctorId+1, patientId, roomId+1, _dateRange, lisaTitle2);
+      schedule.AddNewAppointment(lisaAppointment2);
+
+      Assert.True(lisaAppointment.IsPotentiallyConflicting, "lisa1 not conflicting");
+      Assert.True(lisaAppointment2.IsPotentiallyConflicting, "lisa2 not conflicting");
+    }
+
+    [Fact]
+    public void MarksConflictingAppointmentsForSameDoctorInTwoRoomsAtSameTime()
+    {
+      var schedule = new Schedule(_scheduleId, _dateRange, _clinicId);
+      var appointmentType = 1;
+      var doctorId = 2;
+      var patientId = 3;
+      var roomId = 4;
+
+      var lisaTitle = "Lisa Appointment";
+      var lisaAppointment = new Appointment(Guid.NewGuid(), appointmentType, _scheduleId, _clinicId, doctorId, patientId, roomId, _dateRange, lisaTitle);
+      schedule.AddNewAppointment(lisaAppointment);
+
+      var lisaTitle2 = "Lisa Appointment 2";
+      var lisaAppointment2 = new Appointment(Guid.NewGuid(), appointmentType, _scheduleId, _clinicId, doctorId, patientId+1, roomId+1, _dateRange, lisaTitle2);
+      schedule.AddNewAppointment(lisaAppointment2);
+
+      Assert.True(lisaAppointment.IsPotentiallyConflicting, "lisa1 not conflicting");
+      Assert.True(lisaAppointment2.IsPotentiallyConflicting, "lisa2 not conflicting");
+    }
+
+    [Fact]
+    public void MarksConflictingAppointmentsForSameRoomAtSameTime()
+    {
+      var schedule = new Schedule(_scheduleId, _dateRange, _clinicId);
+      var appointmentType = 1;
+      var doctorId = 2;
+      var patientId = 3;
+      var roomId = 4;
+
+      var lisaTitle = "Lisa Appointment";
+      var lisaAppointment = new Appointment(Guid.NewGuid(), appointmentType, _scheduleId, _clinicId, doctorId, patientId, roomId, _dateRange, lisaTitle);
+      schedule.AddNewAppointment(lisaAppointment);
+
+      var lisaTitle2 = "Lisa Appointment 2";
+      var lisaAppointment2 = new Appointment(Guid.NewGuid(), appointmentType, _scheduleId, _clinicId, doctorId+1, patientId+1, roomId, _dateRange, lisaTitle2);
       schedule.AddNewAppointment(lisaAppointment2);
 
       Assert.True(lisaAppointment.IsPotentiallyConflicting, "lisa1 not conflicting");
