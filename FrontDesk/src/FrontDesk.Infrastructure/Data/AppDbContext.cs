@@ -19,6 +19,7 @@ namespace FrontDesk.Infrastructure.Data
         : base(options)
     {
       _mediator = mediator;
+      SavedChanges += DbContext_SavedChanges;
     }
 
     public DbSet<Schedule> Schedules { get; set; }
@@ -35,8 +36,11 @@ namespace FrontDesk.Infrastructure.Data
       modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
-    // TODO: Use DbContext.SavedChanges event and handler to support events
-    // https://docs.microsoft.com/en-us/ef/core/logging-events-diagnostics/events
+    public void DbContext_SavedChanges(object sender, SavedChangesEventArgs e)
+    {
+      Console.WriteLine($"Saved Chagnes at {DateTime.Now}");
+    }
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
       int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
